@@ -23,9 +23,17 @@ import keras.losses
 #load mnist dataset
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
+X_8, y = resizeImages(X_train, y_train, resize_shape=(8,8))
+X_8_padded_32,y = padToLength(X_8, y_train, padding_shape=(32,32))
+plotMnistImages(X_8_padded_32, y_train)
+
 X_16, y = resizeImages(X_train, y_train, resize_shape=(16,16))
 X_16_padded_32,y = padToLength(X_16, y_train, padding_shape=(32,32))
 plotMnistImages(X_16_padded_32, y_train)
+
+X_20, y = resizeImages(X_train, y_train, resize_shape=(20,20))
+X_20_padded_32,y = padToLength(X_20, y_train, padding_shape=(32,32))
+plotMnistImages(X_20_padded_32, y_train)
 
 X_24, y = resizeImages(X_train, y_train, resize_shape=(24,24))
 X_24_padded_32,y = padToLength(X_24, y_train, padding_shape=(32,32))
@@ -36,9 +44,9 @@ plotMnistImages(X_28_padded_32, y_train)
 plt.show()
 
 #Concatenate to get training data
-train_x= np.concatenate((X_28_padded_32, X_24_padded_32, X_16_padded_32))
+train_x= np.concatenate((X_28_padded_32, X_24_padded_32, X_16_padded_32, X_8_padded_32, X_20_padded_32))
 print(train_x.shape)
-train_y = np.concatenate((y_train, y_train, y_train))
+train_y = np.concatenate((y_train, y_train, y_train, y_train, y_train))
 print(train_y.shape)
 
 #Reshape & Normalize Data
