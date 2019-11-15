@@ -30,3 +30,13 @@ To Run it just do:
 ```
 python3 BaselineCNN.py
 ```
+
+Testing:
+```
+X_tester = np.pad(resize(X_test[1174],(6,6)),[13,13],mode='constant')
+
+np.argmax(model.predict(X_tester.reshape(1,32,32,1)))
+
+plt.subplot(121)
+plt.imshow(X_tester, cmap='gray')
+```
