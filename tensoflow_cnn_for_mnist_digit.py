@@ -8,6 +8,10 @@ classes = 10
 x = tf.placeholder('float',[None,784])
 y = tf.placeholder('float')
 
+keep_rate = 0.8
+keep_prob = tf.placeholder(tf.float32)
+
+
 def conv2d(x,W):
     return tf.nn.conv2d(x,W,strides=[1,1,1,1],padding='SAME')
 
@@ -29,21 +33,22 @@ def conv_neural_network(x):
                } 
 
     x = tf.reshape(x,shape=[-1,28,28,1])
-    conv1 = conv2d(x,weights['W_conv1'])
+    conv1 = tf.nn.relu(conv2d(x,weights['W_conv1'])+biases['B_conv1'])
     conv1 = maxpool2d(conv1)
     
-    conv2 = conv2d(conv1,weights['W_conv2'])
+    conv2 = tf.nn.relu(conv2d(conv1,weights['W_conv2']) + biases['B_conv2'])
     conv2 = maxpool2d(conv2)
     
     fc = tf.reshape(conv2,[-1,7*7*64])
-    fc = tf.nn.relu(tf.matmul(fc,weights['W_fc']+biases['W_fc']))
+    fc = tf.nn.relu(tf.matmul(fc,weights['W_fc'])+biases['B_fc'])
+    fc = tf.nn.dropout(fc, keep_rate)
               
     output = tf.matmul(fc,weights['Out'])+biases['Out']
     return output
     
 def train_nn(x):
     pred = conv_neural_network(x)
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_wih_logits(logits=pred,labels=y))
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(logits=pred,labels=y) )
     optimize = tf.train.AdamOptimizer().minimize(cost)
     main_epoch = 20
     with tf.Session() as sess:
@@ -62,7 +67,7 @@ def train_nn(x):
         
         print('Accuracy',accuracy.eval({x:mnist.test.images,y:mnist.test.labels}))
     
-train_nn(input_data)
+train_nn(x)
     
     
 
